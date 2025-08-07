@@ -1,0 +1,5 @@
+{
+    "name": "finnikacc",
+    "private": true,
+    "workspaces": ["webapps/*"]
+}
