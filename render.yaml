@@ -1,0 +1,10 @@
+services:
+  - type: web
+    runtime: static
+    name: my-vue-app
+    buildCommand: npm run build -w webapps/finnika-cc
+    staticPublishPath: dist # or public, or whatever your build output directory is
+    pullRequestPreviewsEnabled: true
+    # envVars:
+    #   - key: VUE_APP_API_URL
+    #     value: https://api.example.com
