@@ -5,6 +5,8 @@ services:
     buildCommand: npm run build -w webapps/finnikacc-ui
     staticPublishPath: webapps/finnikacc-ui/dist # or public, or whatever your build output directory is
     pullRequestPreviewsEnabled: true
+    domains:
+    - cc.finnika.app
     # envVars:
     #   - key: VUE_APP_API_URL
     #     value: https://api.example.com
