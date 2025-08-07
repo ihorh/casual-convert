@@ -7,6 +7,15 @@ services:
     pullRequestPreviewsEnabled: true
     domains:
     - cc.finnika.app
+    buildFilter:
+      paths:
+        - package.json
+        - package-lock.json
+        - webapps/finnikacc-ui/**/*
+      ignoredPaths:
+        - webapps/finnikacc-ui/README.md
+        - webapps/finnikacc-ui/src/**/__tests__/*
+        - webapps/finnikacc-ui/**/.*
     # envVars:
     #   - key: VUE_APP_API_URL
     #     value: https://api.example.com
