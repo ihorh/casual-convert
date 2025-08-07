@@ -2,7 +2,7 @@ services:
   - type: web
     runtime: static
     name: my-vue-app
-    buildCommand: npm run build -w webapps/finnika-cc
+    buildCommand: npm run build -w webapps/finnikacc-ui
     staticPublishPath: dist # or public, or whatever your build output directory is
     pullRequestPreviewsEnabled: true
     # envVars:
