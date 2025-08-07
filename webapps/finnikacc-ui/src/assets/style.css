@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@layer base {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        font-family: theme(font-body);
+    }
+    body {
+        background: theme(color-yinmn-blue-200);
+        color: theme(color-sunset.800);
+    }
+    header {
+        background: theme(color-yinmn-blue.300)
+    }
+    main {
+        background: theme(color-yinmn-blue.400)
+    }
+    h1 {
+        font-size: var(--text-3xl);
+    }
+    h2 {
+        font-size: var(--text-2xl);
+    }
+    /* li {
+        list-style: inside;
+    } */
+}
+
+@layer components {}
+
+@theme {
+    /* --*: initial; */
+
+    --font-body: "Helvetica Neue", sans-serif;
+
+    /* Atomic Tangerine */
+    --color-atomic-tangerine-100: #3f1903;
+    --color-atomic-tangerine-200: #7f3206;
+    --color-atomic-tangerine-300: #be4b09;
+    --color-atomic-tangerine-400: #f46715;
+    --color-atomic-tangerine-500: #f79256;
+    --color-atomic-tangerine-600: #f9a677;
+    --color-atomic-tangerine-700: #fabc99;
+    --color-atomic-tangerine-800: #fcd3bb;
+    --color-atomic-tangerine-900: #fde9dd;
+    --color-atomic-tangerine: #f79256;
+
+    /* Sunset */
+    --color-sunset-100: #4f2c03;
+    --color-sunset-200: #9f5807;
+    --color-sunset-300: #ee840a;
+    --color-sunset-400: #f8ab53;
+    --color-sunset-500: #fbd1a2;
+    --color-sunset-600: #fcdbb5;
+    --color-sunset-700: #fde4c7;
+    --color-sunset-800: #fdedda;
+    --color-sunset-900: #fef6ec;
+    --color-sunset: #fbd1a2;
+
+    /* Tiffany Blue */
+    --color-tiffany-blue-100: #123027;
+    --color-tiffany-blue-200: #24614e;
+    --color-tiffany-blue-300: #369176;
+    --color-tiffany-blue-400: #4cbd9b;
+    --color-tiffany-blue-500: #7dcfb6;
+    --color-tiffany-blue-600: #97d8c5;
+    --color-tiffany-blue-700: #b1e2d3;
+    --color-tiffany-blue-800: #cbece2;
+    --color-tiffany-blue-900: #e5f5f0;
+    --color-tiffany-blue: #7dcfb6;
+
+    /* Moonstone */
+    --color-moonstone-100: #002429;
+    --color-moonstone-200: #004852;
+    --color-moonstone-300: #006c7a;
+    --color-moonstone-400: #0090a3;
+    --color-moonstone-500: #00b2ca;
+    --color-moonstone-600: #0ae2ff;
+    --color-moonstone-700: #47eaff;
+    --color-moonstone-800: #85f1ff;
+    --color-moonstone-900: #c2f8ff;
+    --color-moonstone: #00b2ca;
+
+    /* Yinmn Blue */
+    --color-yinmn-blue-100: #06101c;
+    --color-yinmn-blue-200: #0c1f38;
+    --color-yinmn-blue-300: #122f53;
+    --color-yinmn-blue-400: #183f6f;
+    --color-yinmn-blue-500: #1d4e89;
+    --color-yinmn-blue-600: #296fc3;
+    --color-yinmn-blue-700: #5692db;
+    --color-yinmn-blue-800: #8eb6e7;
+    --color-yinmn-blue-900: #c7dbf3;
+    --color-yinmn-blue: #1d4e89;
+}
