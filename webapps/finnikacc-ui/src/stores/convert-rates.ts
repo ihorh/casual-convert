@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js'
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
-import type {Data} from '@/types-and-utils/model'
+import type { Data } from '@/types-and-utils/model'
 
 const useMock = import.meta.env.MODE === 'preview'
 
@@ -16,25 +16,25 @@ const _MAIN_BASE_CONV_RATES: { [key: string]: Decimal } = {
 }
 
 const MAIN_BASE_CONV_RATES: Data.CurrencyConvertRateModel[] = [
-    {baseCurrency: "USD", quoteCurrency: "USD", convertRate: Decimal(1)},
-    {baseCurrency: "USD", quoteCurrency: "EUR", convertRate: Decimal(0.86)},
-    {baseCurrency: "USD", quoteCurrency: "GBP", convertRate: Decimal(0.75)},
-    {baseCurrency: "USD", quoteCurrency: "PLN", convertRate: Decimal(3.7)},
-    {baseCurrency: "USD", quoteCurrency: "UAH", convertRate: Decimal(41.71)},
+    { baseCurrency: 'USD', quoteCurrency: 'USD', convertRate: Decimal(1) },
+    { baseCurrency: 'USD', quoteCurrency: 'EUR', convertRate: Decimal(0.86) },
+    { baseCurrency: 'USD', quoteCurrency: 'GBP', convertRate: Decimal(0.75) },
+    { baseCurrency: 'USD', quoteCurrency: 'PLN', convertRate: Decimal(3.7) },
+    { baseCurrency: 'USD', quoteCurrency: 'UAH', convertRate: Decimal(41.71) },
 ]
 
 export const useConvertRatesStore = defineStore('convert-rates', () => {
-    const awailableCurrencies = computed(() => MAIN_BASE_CONV_RATES)
+    const supportedCurrencies = computed(() => MAIN_BASE_CONV_RATES)
 
     const mainBaseCurrency = computed(() => getConvRateModel(MAIN_BASE_CURRENCY))
 
     function supports(currency: string): boolean {
-        return awailableCurrencies.value.some((r) => r.quoteCurrency === currency)
+        return supportedCurrencies.value.some((r) => r.quoteCurrency === currency)
     }
 
     function getConvRateModel(currency: string): Data.CurrencyConvertRateModel {
-        return awailableCurrencies.value.find((r) => r.quoteCurrency === currency)!
+        return supportedCurrencies.value.find((r) => r.quoteCurrency === currency)!
     }
 
-    return { awailableCurrencies, mainBaseCurrency, getConvRateModel, supports}
+    return { supportedCurrencies, mainBaseCurrency, getConvRateModel, supports }
 })

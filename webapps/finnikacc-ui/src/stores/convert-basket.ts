@@ -14,7 +14,7 @@ export const useConvertBasketStore = defineStore('convert-basket', () => {
     ])
 
     const awailableCurrencies = computed(() =>
-        convStore.awailableCurrencies.filter((c) => !contains(c.quoteCurrency)),
+        convStore.supportedCurrencies.filter((c) => !contains(c.quoteCurrency)),
     )
 
     function contains(currency: String): boolean {
