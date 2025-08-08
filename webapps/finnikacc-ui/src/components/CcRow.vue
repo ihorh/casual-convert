@@ -5,12 +5,11 @@
     <p v-else></p>
     <v-text-field :readonly="true" density="compact">
         <template #append-inner>
-            {{ rowItem.convRateMainBase }}
+            <span class="text-sm">{{ rowItem.convRateMainBase }}</span>
         </template>
         {{ rowItem.currency }}
     </v-text-field>
     <c-input-decimal density="compact" v-model="amount" @user-input="handleAmountUpdate">
-        
     </c-input-decimal>
     <v-btn v-if="canRemove" @click="handleDelete" class="px-0" min-width="0">
         <i class="fas fa-trash-can text-red-600"></i>

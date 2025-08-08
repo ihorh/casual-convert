@@ -1,50 +1,41 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import Decimal from 'decimal.js'
-import type { View } from '@/types-and-utils/model'
+import type { Data, View } from '@/types-and-utils/model'
+import { useConvertRatesStore } from './convert-rates'
 
-const MAIN_BASE_CURRENCY = 'USD'
 const MAIN_BASE_AMOUNT_DEFAULT = Decimal(100)
 
-const MAIN_BASE_CONV_RATES: { [key: string]: Decimal } = {
-    EUR: new Decimal(0.86),
-    GBP: new Decimal(0.75),
-    PLN: new Decimal(3.7),
-    UAH: new Decimal(41.71),
-}
-
 export const useConvertBasketStore = defineStore('convert-basket', () => {
-    const convRows = ref<View.CurrencyConvRow[]>([createMainBaseRow()])
+    const convStore = useConvertRatesStore()
+
+    const convRows = ref<View.CurrencyConvRow[]>([
+        createQuoteRowDefaults(convStore.mainBaseCurrency, MAIN_BASE_AMOUNT_DEFAULT, true, true),
+    ])
 
     const awailableCurrencies = computed(() =>
-        Object.keys(MAIN_BASE_CONV_RATES).filter((c) => !contains(c)),
+        convStore.awailableCurrencies.filter((c) => !contains(c.quoteCurrency)),
     )
-    const mainBaseCurrency = computed(() => convRows.value.filter((row) => row.isMainBase)[0])
-    const currenBaseCurrency = computed(() => convRows.value.filter((row) => row.isCurrentBase)[0])
 
     function contains(currency: String): boolean {
-        return convRows.value.some((row) => row.currency == currency)
-    }
-
-    function supports(currency: string): boolean {
-        return currency in MAIN_BASE_CONV_RATES || currency === MAIN_BASE_CURRENCY
+        return convRows.value.some((row) => row.currency === currency)
     }
 
     function canRemove(currency: string): boolean {
-        return currency !== MAIN_BASE_CURRENCY
+        return currency !== convStore.mainBaseCurrency.quoteCurrency
     }
 
     function addConvRow(currency: string) {
-        if (contains(currency) || !supports(currency)) {
+        if (contains(currency) || !convStore.supports(currency)) {
             throw new Error('Unexpected error')
         }
-        convRows.value.push(createQuoteRowDefaults(currency))
+        convRows.value.push(createQuoteRowDefaults(convStore.getConvRateModel(currency)))
         updateAllRows()
     }
 
     function removeConvRow(currency: string) {
         console.log('removeConvRow: ', currency)
-        if (currency === MAIN_BASE_CURRENCY) {
+        if (!canRemove(currency)) {
             throw new Error('Unexpected error')
         }
         convRows.value = convRows.value.filter((row) => row.currency !== currency)
@@ -78,7 +69,6 @@ export const useConvertBasketStore = defineStore('convert-basket', () => {
         convRows,
         awailableCurrencies,
         contains,
-        supports,
         canRemove,
         addConvRow,
         removeConvRow,
@@ -86,20 +76,16 @@ export const useConvertBasketStore = defineStore('convert-basket', () => {
     }
 })
 
-const createMainBaseRow = (): View.CurrencyConvRow => ({
-    currency: MAIN_BASE_CURRENCY,
-    convRateMainBase: Decimal(1),
-    convRateCurrentBase: Decimal(1),
-    amount: MAIN_BASE_AMOUNT_DEFAULT,
-    isMainBase: true,
-    isCurrentBase: true,
-})
-
-const createQuoteRowDefaults = (currency: string): View.CurrencyConvRow => ({
-    currency: currency,
-    amount: Decimal(0),
-    convRateMainBase: MAIN_BASE_CONV_RATES[currency],
-    convRateCurrentBase: MAIN_BASE_CONV_RATES[currency],
-    isMainBase: false,
-    isCurrentBase: false,
+const createQuoteRowDefaults = (
+    currency: Data.CurrencyConvertRateModel,
+    amount: Decimal = Decimal(0),
+    isMainBase: boolean = false,
+    isCurrentBase: boolean = false,
+): View.CurrencyConvRow => ({
+    currency: currency.quoteCurrency,
+    amount: amount,
+    convRateMainBase: currency.convertRate,
+    convRateCurrentBase: currency.convertRate,
+    isMainBase: isMainBase,
+    isCurrentBase: isCurrentBase,
 })

@@ -1,7 +1,6 @@
-import type { Decimal } from "decimal.js"
+import type { Decimal } from 'decimal.js'
 
 export namespace View {
-
     export interface CurrencyConvRow {
         currency: string
         convRateMainBase: Decimal
@@ -12,4 +11,13 @@ export namespace View {
     }
 }
 
-export namespace Data {}
+export namespace Data {
+    export interface CurrencyConvertRateModel {
+        baseCurrency: string
+        quoteCurrency: string
+        convertRate: Decimal
+        rateType?: string
+        rateAge?: string
+        rateAt?: Date
+    }
+}
