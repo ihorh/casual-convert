@@ -4,9 +4,13 @@
 
 ### finnikacc-ui
 
+Git hub action listens to all tags `prod-*`.
+But prefer to create both `v*` and `prod-v*` for versioning consistency.
+
 ```bash
-> git tag prod-1.0.3
+> git tag v1.0.3
+> git tag prod-v1.0.3
 ```
 ```bash
-> git push origin prod-1.0.3
+> git push origin v1.0.3 prod-v1.0.3
 ```
