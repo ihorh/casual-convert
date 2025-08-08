@@ -25,7 +25,7 @@ app.use(vuetify)
 
 if (import.meta.env.PROD) {
     configure({
-        tagId: 'G-PYN2E2SK7V',
+        tagId: 'G-7NNCH1RRNJ',
     })
 }
 
