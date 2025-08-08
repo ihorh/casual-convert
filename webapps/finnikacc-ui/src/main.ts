@@ -3,6 +3,7 @@ import './assets/style.css'
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { configure } from 'vue-gtag'
 
 import * as components from 'vuetify/components'
@@ -21,6 +22,7 @@ const vuetify = createVuetify({
 const app = createApp(App)
 
 app.use(createPinia())
+app.use(VueQueryPlugin)
 app.use(vuetify)
 
 if (import.meta.env.PROD) {
