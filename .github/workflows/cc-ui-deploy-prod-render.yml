@@ -15,7 +15,7 @@ jobs:
 
       - name: Trigger Render API deploy
         run: |
-          curl -X POST \
+          curl --fail -X POST \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d "{\"commitId\": \"${{ steps.vars.outputs.commit_sha }}\"}" \
