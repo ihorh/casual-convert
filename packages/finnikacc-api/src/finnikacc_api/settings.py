@@ -18,6 +18,10 @@ class _AppSettings(BaseSettings):
 
     API_WEB_ALLOW_ORIGINS: Annotated[list[str], NoDecode]
 
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_DB: str | int
+
     @field_validator("API_WEB_ALLOW_ORIGINS", mode="before")
     @classmethod
     def split_urls(cls, v: Any) -> Any:  # noqa: ANN401
@@ -33,7 +37,7 @@ class _AppSecretSettings(BaseSettings):
 
 class _Settings:
     APP_ENV = _APP_ENV
-    app = _AppSettings() # pyright: ignore[reportCallIssue]
+    app = _AppSettings()  # pyright: ignore[reportCallIssue]
     secret = _AppSecretSettings()
 
 

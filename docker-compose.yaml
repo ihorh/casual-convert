@@ -20,14 +20,31 @@ services:
     build:
       context: .
       dockerfile: packages/finnikacc-api/Dockerfile
+    command:
+      [
+        "uv",
+        "run",
+        "uvicorn",
+        "finnikacc_api.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+        "--use-colors",
+      ]
     volumes:
-      - ./:/app  # mount current directory into container
+      - ./:/app
+      - venv_data:/app/.venv
     ports:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
       - APP_ENV=dev_container
-  
+      - REDIS_HOST=finnikacc_kv
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+
   finnikacc_ui:
     container_name: finnikacc-ui
     build:
@@ -41,7 +58,7 @@ services:
       VITE_API_SERVER_URL: http://localhost:8000/api-web-app
       NODE_ENV: development
 
-
 volumes:
   redis_data:
   redis_insight_data:
+  venv_data:

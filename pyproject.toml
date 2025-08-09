@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "finnikacc-api",
+    "uvicorn[standard]>=0.35.0",
 ]
 
 [tool.uv.sources]
@@ -23,9 +24,7 @@ requires = ["uv_build>=0.8.3,<0.9.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = [
-    "uvicorn[standard]>=0.35.0",
-]
+dev = []
 
 [tool.uv.workspace]
 members = [

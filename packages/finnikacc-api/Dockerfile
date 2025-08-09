@@ -17,4 +17,4 @@ RUN uv sync --frozen --no-cache
 
 WORKDIR /app/packages/finnikacc-api
 
-CMD ["uv", "run", "uvicorn", "finnikacc_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# CMD ["uv", "run", "uvicorn", "finnikacc_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
