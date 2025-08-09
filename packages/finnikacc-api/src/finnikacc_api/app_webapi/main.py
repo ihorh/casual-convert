@@ -1,21 +1,17 @@
+import logging
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from typing import Annotated, Literal
 
 from fastapi import FastAPI, Query
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field
 
+from finnikacc_api.app_webapi.middleware import apply_middleware
+
+LOG = logging.getLogger(__name__)
+
 app_webapi = FastAPI()
-
-app_webapi.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
+apply_middleware(app_webapi)
 
 CurrencyConvertRateType = Literal["recent", "average"]
 CurrencyConvertRateAge = Literal["1h", "1d", "2d", "outdated"]
@@ -43,7 +39,7 @@ _COMMON_ARGS = {
     "rate_at": datetime.now(UTC) - timedelta(weeks=10),
 }
 
-
+_DEFAULT_MAIN_BASE_CURRENCY = "USD"
 _CURRENCIES = ["EUR", "GBP", "PLN", "UAH"]
 _DATA = [
     CurrencyConvertRateModel(**_COMMON_ARGS, quote_currency="USD", convert_rate=Decimal("1.0")),
@@ -59,9 +55,13 @@ async def get_convert_rates(
     base_currency: str = "USD",
     quote_currencies: Annotated[list[str] | None, Query()] = None,
 ) -> list[CurrencyConvertRateModel]:
+    if base_currency != _DEFAULT_MAIN_BASE_CURRENCY:
+        raise ValueError
     return _DATA
 
 
 @app_webapi.get("/quote_currencies")
 async def get_quote_currencies(base_currency: str) -> list[str]:
-    return [r.quote_currency for r in _DATA]
+    if base_currency != _DEFAULT_MAIN_BASE_CURRENCY:
+        raise ValueError
+    return [_DEFAULT_MAIN_BASE_CURRENCY, *_CURRENCIES]
