@@ -1,9 +1,9 @@
 from typing import Annotated, Any, Final, Literal
 
-from pydantic import BeforeValidator, field_validator
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
-AppEnv = Literal["dev_local", "dev_container", "prod_render"]
+AppEnv = Literal["dev_container", "prod_render"]
 
 
 class _AppEnvSettings(BaseSettings):
