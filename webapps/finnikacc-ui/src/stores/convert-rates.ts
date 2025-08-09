@@ -17,7 +17,7 @@ export const useConvertRatesStore = defineStore('convert-rates', () => {
         error,
     } = useCurrencyRatesQuery([MAIN_BASE_CURRENCY, ...QUOTE_CURRENCIES].sort())
 
-    const now = useCurrentTime(15000)
+    const now = useCurrentTime(55000)
 
     const mainBaseCurrency = computed(() => getConvRateModel(MAIN_BASE_CURRENCY))
     const oldestRateByDate = computed(() =>
@@ -33,8 +33,6 @@ export const useConvertRatesStore = defineStore('convert-rates', () => {
     )
 
     const ratesStatus = computed(() => {
-        console.log('now: ', now.value)
-        console.log('hours: ', hoursSinceOldesRate.value)
         if (hoursSinceOldesRate.value > 48) {
             return View.ConversionRatesStatus.VERY_OUTDATED
         } else if (hoursSinceOldesRate.value > 24) {

@@ -1,5 +1,6 @@
 import type { Data } from '@/types-and-utils/model'
 import { useQuery } from '@tanstack/vue-query'
+import axios from 'axios'
 import Decimal from 'decimal.js'
 
 const MAIN_BASE_CONV_RATES: Data.CurrencyConvertRateModel[] = [
@@ -30,9 +31,20 @@ export function useCurrencyRatesQuery(currencies_sorted: string[]) {
     })
 }
 
+const api = axios.create({
+    baseURL: 'http://localhost:8000/api-web-app',
+})
+
 async function fetchCurrencyRates(
     currencies_sorted: string[],
 ): Promise<Data.CurrencyConvertRateModel[]> {
-    console.log('fetchCurrencyRate')
-    throw Error('error fetching fresh data.')
+    console.log('call fetchCurrencyRates')
+    const response = await api.get<Data.CurrencyConvertRateModel[]>('/convert-rates')
+    const data: Data.CurrencyConvertRateModel[] = response.data
+    for (const r of data) {
+        r.convertRate = Decimal(r.convertRate)
+        // r.rateAt = r.rateAt ? new Date(r.rateAt) : new Date(0)
+    }
+    console.debug(response.data)
+    return response.data
 }
