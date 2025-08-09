@@ -32,7 +32,7 @@ export function useCurrencyRatesQuery(currencies_sorted: string[]) {
 }
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000/api-web-app',
+    baseURL: import.meta.env.VITE_API_SERVER_URL,
 })
 
 async function fetchCurrencyRates(
