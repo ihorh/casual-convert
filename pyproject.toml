@@ -7,11 +7,50 @@ authors = [
     { name = "ihor", email = "Ihor.Halaniuk@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "finnikacc-api"
+]
+
+[tool.uv.sources]
+finnikacc-api = { workspace = true }
 
 [project.scripts]
 finnikacc = "finnikacc:main"
+api-srv-dev = "finnikacc.scripts.api_server_dev:main"
 
 [build-system]
 requires = ["uv_build>=0.8.3,<0.9.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "uvicorn[standard]>=0.35.0",
+]
+
+[tool.uv.workspace]
+members = [
+    "packages/*",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    "TD003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/*" = ["INP001", "T201", "ANN201", "S101"]
+
+[tool.pyright] # TODO: do we need it?
+typeCheckingMode = "basic"
