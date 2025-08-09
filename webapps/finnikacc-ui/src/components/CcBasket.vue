@@ -14,6 +14,7 @@
             :key="`new-row-${newRowKey}`"
             @currency-selected="handleCurrencySelectedNew"
         />
+        <cc-conv-rate-status-rows />
     </div>
 </template>
 
@@ -21,6 +22,7 @@
 import CcRow from './CcRow.vue'
 import CcRowNew from './CcRowNew.vue'
 import CcHeaderRow from './CcHeaderRow.vue'
+import CcConvRateStatusRows from './CcConvRateStatusRows.vue'
 import { useConvertBasketStore } from '@/stores/convert-basket'
 import { ref } from 'vue'
 

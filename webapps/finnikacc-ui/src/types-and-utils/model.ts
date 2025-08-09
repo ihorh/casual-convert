@@ -9,6 +9,13 @@ export namespace View {
         isMainBase: boolean
         isCurrentBase: boolean
     }
+
+    export enum ConversionRatesStatus {
+        OK = "OK",
+        SLIGHTLY_OUTDATED = "SLIGHTLY_OUTDATED",
+        JUST_OUTDATED = "JUST_OUTDATED",
+        VERY_OUTDATED = "VERY_OUTDATED",
+    }
 }
 
 export namespace Data {

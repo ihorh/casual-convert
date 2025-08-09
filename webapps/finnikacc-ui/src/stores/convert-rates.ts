@@ -1,32 +1,50 @@
 import Decimal from 'decimal.js'
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
-import type { Data } from '@/types-and-utils/model'
+import  { type Data, View } from '@/types-and-utils/model'
+import { useCurrencyRatesQuery } from './queries'
+import { useCurrentTime } from '@/types-and-utils/useCurrentTime'
+import { differenceInHours } from 'date-fns'
 
 const useMock = import.meta.env.MODE === 'preview'
 
 const MAIN_BASE_CURRENCY = 'USD'
 
-const _MAIN_BASE_CONV_RATES: { [key: string]: Decimal } = {
-    USD: new Decimal(1),
-    EUR: new Decimal(0.86),
-    GBP: new Decimal(0.75),
-    PLN: new Decimal(3.7),
-    UAH: new Decimal(41.71),
-}
-
-const MAIN_BASE_CONV_RATES: Data.CurrencyConvertRateModel[] = [
-    { baseCurrency: 'USD', quoteCurrency: 'USD', convertRate: Decimal(1) },
-    { baseCurrency: 'USD', quoteCurrency: 'EUR', convertRate: Decimal(0.86) },
-    { baseCurrency: 'USD', quoteCurrency: 'GBP', convertRate: Decimal(0.75) },
-    { baseCurrency: 'USD', quoteCurrency: 'PLN', convertRate: Decimal(3.7) },
-    { baseCurrency: 'USD', quoteCurrency: 'UAH', convertRate: Decimal(41.71) },
-]
-
 export const useConvertRatesStore = defineStore('convert-rates', () => {
-    const supportedCurrencies = computed(() => MAIN_BASE_CONV_RATES)
+    const {
+        isError,
+        data: supportedCurrencies,
+        error,
+    } = useCurrencyRatesQuery(['USD', 'EUR', 'PLN', 'GBP', 'UAH'].sort())
+
+    const now = useCurrentTime(15000)
 
     const mainBaseCurrency = computed(() => getConvRateModel(MAIN_BASE_CURRENCY))
+    const oldestRateByDate = computed(() =>
+        supportedCurrencies.value.reduce((min, item) => {
+            if (item.rateAt === undefined) return item
+            else if (min.rateAt === undefined) return min
+            else return item.rateAt < min.rateAt ? item : min
+        }),
+    )
+    const oldestRateDate = computed(() => oldestRateByDate.value.rateAt ?? new Date(0))
+    const hoursSinceOldesRate = computed(() => differenceInHours(now.value, oldestRateDate.value) ?? 1000)
+
+    const ratesStatus = computed(
+        () => {
+            console.log("now: ", now.value)
+            console.log("hours: ", hoursSinceOldesRate.value)
+            if (hoursSinceOldesRate.value > 48) {
+                return View.ConversionRatesStatus.VERY_OUTDATED
+            } else if (hoursSinceOldesRate.value > 24) {
+                return View.ConversionRatesStatus.JUST_OUTDATED
+            } else if (hoursSinceOldesRate.value > 4) {
+                return View.ConversionRatesStatus.SLIGHTLY_OUTDATED
+            } else {
+                return View.ConversionRatesStatus.OK
+            }
+        }
+    )
 
     function supports(currency: string): boolean {
         return supportedCurrencies.value.some((r) => r.quoteCurrency === currency)
@@ -36,5 +54,14 @@ export const useConvertRatesStore = defineStore('convert-rates', () => {
         return supportedCurrencies.value.find((r) => r.quoteCurrency === currency)!
     }
 
-    return { supportedCurrencies, mainBaseCurrency, getConvRateModel, supports }
+    return {
+        supportedCurrencies,
+        mainBaseCurrency,
+        getConvRateModel,
+        supports,
+        error,
+        isError,
+        oldestRateByDate,
+        ratesStatus
+    }
 })
