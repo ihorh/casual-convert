@@ -30,7 +30,7 @@
     </template>
 
     <template v-if="status != View.ConversionRatesStatus.OK || convStore.isError">
-        <p v-for="_ in 4">&nbsp;</p>
+        <p v-for="_ in 4" class="text-xs">&nbsp;</p>
     </template>
 </template>
 
