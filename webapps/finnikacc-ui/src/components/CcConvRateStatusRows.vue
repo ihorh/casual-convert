@@ -28,6 +28,10 @@
         </div>
         <p></p>
     </template>
+
+    <template v-if="status != View.ConversionRatesStatus.OK || convStore.isError">
+        <p v-for="_ in 4">&nbsp;</p>
+    </template>
 </template>
 
 <script setup lang="ts">
