@@ -8,6 +8,8 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "aiohttp[speedups]>=3.12.15",
+    "arq>=0.25.0",
     "fastapi>=0.116.1",
     "pydantic-settings>=2.10.1",
     "redis>=6.4.0",

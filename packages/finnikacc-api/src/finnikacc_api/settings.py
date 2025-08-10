@@ -22,6 +22,8 @@ class _AppSettings(BaseSettings):
     REDIS_PORT: int
     REDIS_DB: str | int
 
+    OEX_RATES_BASE_URL: str
+
     @field_validator("API_WEB_ALLOW_ORIGINS", mode="before")
     @classmethod
     def split_urls(cls, v: Any) -> Any:  # noqa: ANN401
@@ -32,13 +34,14 @@ class _AppSettings(BaseSettings):
 
 class _AppSecretSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=f"config/{_APP_ENV}/app.secret.env")
-    pass
+
+    OEX_RATES_APP_ID: str
 
 
 class _Settings:
     APP_ENV = _APP_ENV
     app = _AppSettings()  # pyright: ignore[reportCallIssue]
-    secret = _AppSecretSettings()
+    secret = _AppSecretSettings() # pyright: ignore[reportCallIssue]
 
 
 settings: Final = _Settings()

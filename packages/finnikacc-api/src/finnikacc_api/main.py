@@ -9,7 +9,8 @@ from fastapi.concurrency import asynccontextmanager
 
 from finnikacc_api import settings
 from finnikacc_api.app_webapi.main import app_webapi
-from finnikacc_api.dependencies_external import RedisClientDep, external_deps_lifespan
+from finnikacc_api.lifecycle.arq_lifecycle import arq_lifespan
+from finnikacc_api.lifecycle.dependencies_external import RedisClientDep, external_deps_lifespan
 
 logging.config.fileConfig(f"config/{settings.APP_ENV}/logging.conf", disable_existing_loggers=False)  # pyright: ignore[reportAttributeAccessIssue]
 
@@ -20,6 +21,7 @@ LOG = logging.getLogger(__name__)
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     async with AsyncExitStack() as stack:
         _deps = await stack.enter_async_context(external_deps_lifespan(app))
+        _wrk = await stack.enter_async_context(arq_lifespan(app))
         LOG.info("App lifespan initialization completed.")
         yield
 
@@ -40,7 +42,7 @@ async def try_redis(redis_client: redis.Redis) -> None:
     print(r)
     r = await redis_client.get("test_my:1234")
     print(r)
-    await redis_client.pubsub().su
+
     pass
 
 
