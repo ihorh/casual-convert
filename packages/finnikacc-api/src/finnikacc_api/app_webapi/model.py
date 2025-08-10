@@ -9,8 +9,6 @@ CurrencyConvertRateAge = Literal["1h", "1d", "2d", "outdated"]
 
 
 class BaseConvertModel(BaseModel):
-    asdf:int | None = None
-    qwer:int | None = None
     pass
 
 
