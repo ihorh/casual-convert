@@ -5,6 +5,9 @@ build/
 dist/
 wheels/
 *.egg-info
+.pytest_cache/
+.build/
+**/.cache/
 
 # JS/TS
 node_modules/
