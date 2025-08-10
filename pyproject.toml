@@ -53,3 +53,13 @@ ignore = [
 
 [tool.pyright] # TODO: do we need it?
 typeCheckingMode = "basic"
+
+[tool.pytest.ini_options]
+addopts = "-rA -q"
+asyncio_default_fixture_loop_scope = "module"
+asyncio_mode = "auto"
+log_cli = true
+log_level = "INFO"
+
+[tool.pytest_env]
+APP_ENV = "test_unit"
