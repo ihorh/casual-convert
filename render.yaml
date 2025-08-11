@@ -37,16 +37,11 @@ services:
     autoDeployTrigger: commit
     domains:
     - api.cc.finnika.app
+    rootDir: packages/finnikacc-api
     buildFilter:
-      paths:
-        - pyproject.toml
-        - uv.lock
-        - packages/finnikacc-api/**/*
       ignoredPaths:
-        - packages/finnikacc-api/tests/**/*
-        - packages/finnikacc-api/Dockerfile
-        - webapps/finnikacc-ui/src/**/__tests__/*
-        - webapps/finnikacc-ui/**/.*
+        - tests/**/*
+        - Dockerfile
     envVars:
       - key: APP_ENV
         value: prod_render
