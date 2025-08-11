@@ -9,5 +9,5 @@ from finnikacc_api.arqjobs.fetchrates import fetch_conv_rates_oex
 arq_functions: Sequence[WorkerCoroutine | Function] = []
 
 arq_cron_jobs: Sequence[CronJob] = [
-    cron(fetch_conv_rates_oex, hour=set(range(24)), timeout=60),
+    cron(fetch_conv_rates_oex, hour=set(range(24)), minute=4, run_at_startup=True, timeout=60),
 ]
