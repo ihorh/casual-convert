@@ -1,0 +1,23 @@
+name: Deploy to Render
+
+on:
+  workflow_call:
+    inputs:
+      service_id:
+        required: true
+        type: string
+      commit_sha:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render API deploy
+        run: |
+          curl --fail -X POST \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"commitId\": \"${{ inputs.commit_sha }}\"}" \
+            "https://api.render.com/v1/services/${{ inputs.service_id }}/deploys"

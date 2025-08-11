@@ -3,7 +3,7 @@ name: Deploy cc-ui (specific tag) to Render
 on:
   push:
     tags:
-      - "prod-*"
+      - "old-deprecated-prod-*"
 
 jobs:
   deploy:
