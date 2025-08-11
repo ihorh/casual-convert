@@ -1,16 +1,21 @@
+import logging
 from typing import Annotated, Any, Final, Literal
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
-AppEnv = Literal["dev_container", "prod_render"]
+LOG = logging.getLogger(__name__)
+
+AppEnv = Literal["dev_container", "prod_render", "test_unit"]
 
 
 class _AppEnvSettings(BaseSettings):
-    APP_ENV: str
+    APP_ENV: AppEnv
 
 
 _APP_ENV = _AppEnvSettings().APP_ENV  # pyright: ignore[reportCallIssue]
+
+LOG.info("Environment: %s", _APP_ENV)
 
 
 class _AppSettings(BaseSettings):
@@ -23,6 +28,8 @@ class _AppSettings(BaseSettings):
     REDIS_DB: str | int
 
     OEX_RATES_BASE_URL: str
+    OEX_CACHE_DB_NAME: str
+    OEX_CACHE_EXPIRE_AFTER_SEC: int
 
     @field_validator("API_WEB_ALLOW_ORIGINS", mode="before")
     @classmethod

@@ -1,26 +1,30 @@
-import json
 import logging
 from collections.abc import AsyncGenerator
 from contextlib import AsyncExitStack
 
-import redis.asyncio as redis
-from fastapi import BackgroundTasks, FastAPI
+from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 
 from finnikacc_api import settings
 from finnikacc_api.app_webapi.main import app_webapi
 from finnikacc_api.lifecycle.arq_lifecycle import arq_lifespan
-from finnikacc_api.lifecycle.dependencies_external import RedisClientDep, external_deps_lifespan
-
-logging.config.fileConfig(f"config/{settings.APP_ENV}/logging.conf", disable_existing_loggers=False)  # pyright: ignore[reportAttributeAccessIssue]
+from finnikacc_api.lifecycle.deps_ext_lifecycle import external_deps_lifespan
+from finnikacc_api.lifecycle.deps_int_lifecycle import internal_deps_lifespan
 
 LOG = logging.getLogger(__name__)
+
+
+logging.config.fileConfig(  # pyright: ignore[reportAttributeAccessIssue]
+    f"config/{settings.APP_ENV}/logging.conf",
+    disable_existing_loggers=False,
+)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     async with AsyncExitStack() as stack:
         _deps = await stack.enter_async_context(external_deps_lifespan(app))
+        _ideps = await stack.enter_async_context(internal_deps_lifespan(app))
         _wrk = await stack.enter_async_context(arq_lifespan(app))
         LOG.info("App lifespan initialization completed.")
         yield
@@ -30,20 +34,8 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/status")
-async def get_status(background_tasks: BackgroundTasks, redis_client: RedisClientDep) -> dict[str, str]:
-    background_tasks.add_task(try_redis, redis_client)
+async def get_status() -> dict[str, str]:
     return {"status": "Happy Finnika! :-)"}
-
-
-async def try_redis(redis_client: redis.Redis) -> None:
-    print("redis client test")
-    r = await redis_client.keys("*")
-    await redis_client.set("test_my:1234", json.dumps({"happy": "path", "sad": 13}), ex=300)
-    print(r)
-    r = await redis_client.get("test_my:1234")
-    print(r)
-
-    pass
 
 
 app_api = FastAPI()
