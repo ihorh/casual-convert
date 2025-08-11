@@ -25,23 +25,25 @@ services:
     plan: free
     maxmemoryPolicy: allkeys-lru
 
-
   - type: web
     name: finnika-api
     runtime: python
     plan: free
     region: frankfurt
     buildCommand: uv sync --frozen --no-cache
-    startCommand: uv run uvicorn finnikacc_api.main:app --host 0.0.0.0 --port 8000 --use-colors
+    startCommand: uv run uvicorn finnikacc_api.main:app --host 0.0.0.0 --port 8000 --use-colors --app packages/finnikacc-api
     branch: 3-hourly-scheduled-conversion-rates-fetch
     autoDeployTrigger: commit
     domains:
     - api.cc.finnika.app
-    rootDir: packages/finnikacc-api
     buildFilter:
+      paths:
+        - pyproject.toml
+        - uv.lock
+        - packages/finnikacc-api/**/*
       ignoredPaths:
-        - tests/**/*
-        - Dockerfile
+        - packages/finnikacc-api/tests/**/*
+        - packages/finnikacc-api/Dockerfile
     envVars:
       - key: APP_ENV
         value: prod_render
