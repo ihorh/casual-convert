@@ -3,7 +3,7 @@ from typing import cast
 from redis.asyncio import Redis
 
 from finnikacc_api import settings
-from finnikacc_api.redis._redis_utils import _redis_await
+from finnikacc_api.redis._redis_utils import _redis_await, hsetex
 from finnikacc_api.redis.model import (
     CurrencyRateCacheType,
     CurrencyRateCacheValue,
@@ -27,7 +27,6 @@ class LastRequestETagRedisCache:
         expiration_seconds: int,
         namespace: str = "fcc",
         provider: str = "oex",
-
     ) -> None:
         self._redis = redis
         self._ex = expiration_seconds
@@ -42,7 +41,7 @@ class LastRequestETagRedisCache:
         return _convert_to_typed_etag(result) if result else None
 
     async def hget_raw(self, endpoint: str) -> RequestLastModETagCacheValue | None:
-        result: dict[bytes, bytes] = await _redis_await( self._redis.hgetall(self._name(endpoint)))
+        result: dict[bytes, bytes] = await _redis_await(self._redis.hgetall(self._name(endpoint)))
         if not result:
             return None
         return cast("RequestLastModETagCacheValue", {k.decode(): v.decode() for k, v in result.items()})
@@ -51,13 +50,14 @@ class LastRequestETagRedisCache:
         await self.hset_raw(_convert_to_untyped_etag(mapping), endpoint=endpoint)
 
     async def hset_raw(self, mapping: RequestLastModETagCacheValue, *, endpoint: str) -> None:
-        await _redis_await(
-            self._redis.hsetex(
+        async with self._redis.pipeline() as pipe:
+            await hsetex(
+                pipe,
                 name=self._name(endpoint),
                 mapping=cast("dict[str, str]", mapping),
                 ex=self._ex,
-            ),
-        )
+            )
+
 
 class CurrencyRateRedisCache:
     def __init__(
