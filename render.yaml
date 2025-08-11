@@ -45,6 +45,7 @@ services:
         - packages/finnikacc-api/tests/**/*
         - packages/finnikacc-api/Dockerfile
     envVars:
+      - fromGroup: finnikacc-eg-secrets
       - key: APP_ENV
         value: prod_render
       - key: REDIS_CONNECTION_STRING
