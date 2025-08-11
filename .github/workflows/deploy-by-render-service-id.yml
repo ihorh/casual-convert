@@ -9,6 +9,11 @@ on:
       commit_sha:
         required: true
         type: string
+    secrets:
+        RENDER_API_KEY:
+            required: true
+        RENDER_SERVICE_ID:
+            required: true
 
 jobs:
   deploy:
@@ -20,4 +25,4 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d "{\"commitId\": \"${{ inputs.commit_sha }}\"}" \
-            "https://api.render.com/v1/services/${{ inputs.service_id }}/deploys"
+            "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys"
