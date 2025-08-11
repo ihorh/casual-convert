@@ -94,13 +94,12 @@ class CurrencyRateRedisCache:
         await self.hset_m_raw(mappings_un, base_currency=base_currency)
 
     async def hset_m_raw(self, mappings: dict[str, CurrencyRateCacheValue], *, base_currency: str) -> None:
-        pipe = self._redis.pipeline(transaction=False)
-        for q_curr, mapping in mappings.items():
-            await _redis_await(
-                pipe.hsetex(
+        async with self._redis.pipeline() as pipe:
+            for q_curr, mapping in mappings.items():
+                await hsetex(
+                    pipe,
                     name=self._name(base_currency, q_curr),
                     mapping=cast("dict[str, str]", mapping),
                     ex=self._ex,
-                ),
-            )
-        await pipe.execute()
+                )
+            await pipe.execute()
