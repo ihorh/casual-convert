@@ -38,21 +38,33 @@ async def external_deps_lifespan(app: FastAPI) -> AsyncGenerator[ExternalDepende
 
 
 def _redis_async_factory() -> redis.Redis:
-    return redis.Redis(
-        host=settings.app.REDIS_HOST,
-        port=settings.app.REDIS_PORT,
-        db=settings.app.REDIS_DB,
-    )
+    if settings.app.REDIS_CONNECTION_STRING:
+        return redis.Redis.from_url(settings.app.REDIS_CONNECTION_STRING)
+    if settings.app.REDIS_HOST and settings.app.REDIS_PORT:
+        return redis.Redis(
+            host=settings.app.REDIS_HOST,
+            port=settings.app.REDIS_PORT,
+            db=settings.app.REDIS_DB or 0,
+        )
+    msg = "Redis connection details misconfigured"
+    raise RuntimeError(msg)
 
 
 async def _arq_redis_async_factory() -> ArqRedis:
-    return await create_pool(
-        RedisSettings(
+    redis_settings = None
+    if settings.app.REDIS_CONNECTION_STRING:
+        redis_settings = RedisSettings.from_dsn(settings.app.REDIS_CONNECTION_STRING)
+    elif settings.app.REDIS_HOST and settings.app.REDIS_PORT:
+        redis_settings = RedisSettings(
             host=settings.app.REDIS_HOST,
             port=settings.app.REDIS_PORT,
-            database=int(settings.app.REDIS_DB),
-        ),
-    )
+            database=int(settings.app.REDIS_DB) if settings.app.REDIS_DB else 0,
+        )
+    else:
+        msg = "Redis connection details misconfigured"
+        raise RuntimeError(msg)
+
+    return await create_pool(redis_settings)
 
 
 def _aiohttp_oex_client_factory() -> aiohttp.ClientSession:

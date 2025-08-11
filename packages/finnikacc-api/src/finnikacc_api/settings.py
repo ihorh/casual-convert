@@ -23,9 +23,10 @@ class _AppSettings(BaseSettings):
 
     API_WEB_ALLOW_ORIGINS: Annotated[list[str], NoDecode]
 
-    REDIS_HOST: str
-    REDIS_PORT: int
-    REDIS_DB: str | int
+    REDIS_CONNECTION_STRING: str | None = None
+    REDIS_HOST: str | None = None
+    REDIS_PORT: int | None = None
+    REDIS_DB: str | int | None = None
 
     OEX_RATES_BASE_URL: str
     OEX_CACHE_DB_NAME: str
