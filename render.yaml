@@ -31,7 +31,7 @@ services:
     plan: free
     region: frankfurt
     buildCommand: uv sync --frozen --no-cache
-    startCommand: cd packages/finnikacc-api; uv run uvicorn finnikacc_api.main:app --host 0.0.0.0 --port 8000 --use-colors
+    startCommand: cd packages/finnikacc-api; uv run uvicorn finnikacc_api.main:app --host 0.0.0.0 --port 8000 --use-colors --no-access-log
     branch: 3-hourly-scheduled-conversion-rates-fetch
     autoDeployTrigger: commit
     healthCheckPath: /status
