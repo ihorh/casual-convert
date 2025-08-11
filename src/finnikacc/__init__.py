@@ -1,2 +1,2 @@
 def main() -> None:
-    print("Hello from finnikacc!")
+    print("Hello from finnikacc!")  # noqa: T201
