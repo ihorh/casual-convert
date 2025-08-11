@@ -7,7 +7,6 @@ import redis.asyncio as redis
 from aiohttp_client_cache import SQLiteBackend
 from aiohttp_client_cache.session import CachedSession
 from arq import ArqRedis, create_pool
-from arq.connections import RedisSettings
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 
@@ -51,20 +50,7 @@ def _redis_async_factory() -> redis.Redis:
 
 
 async def _arq_redis_async_factory() -> ArqRedis:
-    redis_settings = None
-    if settings.app.REDIS_CONNECTION_STRING:
-        redis_settings = RedisSettings.from_dsn(settings.app.REDIS_CONNECTION_STRING)
-    elif settings.app.REDIS_HOST and settings.app.REDIS_PORT:
-        redis_settings = RedisSettings(
-            host=settings.app.REDIS_HOST,
-            port=settings.app.REDIS_PORT,
-            database=int(settings.app.REDIS_DB) if settings.app.REDIS_DB else 0,
-        )
-    else:
-        msg = "Redis connection details misconfigured"
-        raise RuntimeError(msg)
-
-    return await create_pool(redis_settings)
+    return await create_pool(settings.arq_redis_settings())
 
 
 def _aiohttp_oex_client_factory() -> aiohttp.ClientSession:

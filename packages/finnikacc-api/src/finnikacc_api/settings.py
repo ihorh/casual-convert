@@ -1,6 +1,7 @@
 import logging
 from typing import Annotated, Any, Final, Literal
 
+from arq.connections import RedisSettings
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
@@ -50,6 +51,18 @@ class _Settings:
     APP_ENV = _APP_ENV
     app = _AppSettings()  # pyright: ignore[reportCallIssue]
     secret = _AppSecretSettings() # pyright: ignore[reportCallIssue]
+
+    def arq_redis_settings(self) -> RedisSettings:
+        if self.app.REDIS_CONNECTION_STRING:
+            return RedisSettings.from_dsn(self.app.REDIS_CONNECTION_STRING)
+        if self.app.REDIS_HOST and self.app.REDIS_PORT:
+            return RedisSettings(
+                host=self.app.REDIS_HOST,
+                port=self.app.REDIS_PORT,
+                database=int(self.app.REDIS_DB) if self.app.REDIS_DB else 0,
+            )
+        msg = "Redis connection details misconfigured"
+        raise RuntimeError(msg)
 
 
 settings: Final = _Settings()

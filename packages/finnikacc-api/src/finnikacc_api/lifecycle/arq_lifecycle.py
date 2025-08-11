@@ -26,13 +26,6 @@ async def _arq_worker_health_log(ctx: dict) -> None:  # noqa: ARG001
     LOG.debug("arq worker health check log: ")
 
 
-_REDIS_SETTINGS = RedisSettings(
-    host=settings.app.REDIS_HOST,
-    port=settings.app.REDIS_PORT,
-    database=int(settings.app.REDIS_DB),
-)
-
-
 class ArqWorkerSettings:
     functions: Sequence[WorkerCoroutine | Function] = arq_functions
     cron_jobs: Sequence[CronJob] | None = [
@@ -41,7 +34,7 @@ class ArqWorkerSettings:
     ]
     on_startup: StartupShutdown | None = None
     on_shutdown: StartupShutdown | None = None
-    redis_settings: RedisSettings | None = _REDIS_SETTINGS
+    redis_settings: RedisSettings | None = settings.arq_redis_settings()
     handle_signals: bool | None = False
 
 
