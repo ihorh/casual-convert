@@ -8,6 +8,10 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "aiohttp-client-cache[speedups]>=0.13.0",
+    "aiohttp[speedups]>=3.12.15",
+    "aiosqlite>=0.21.0",
+    "arq>=0.25.0",
     "fastapi>=0.116.1",
     "pydantic-settings>=2.10.1",
     "redis>=6.4.0",
@@ -21,4 +25,10 @@ requires = ["uv_build>=0.8.4,<0.9.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = []
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-env>=1.1.5",
+]
+
+
