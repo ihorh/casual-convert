@@ -8,8 +8,8 @@ on:
 jobs:
   call-deploy:
     uses: ./.github/workflows/deploy-by-render-service-id.yml
-    with:
-      commit_sha: ${{ github.sha }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       RENDER_SERVICE_ID: ${{ secrets.RENDER_CC_UI_SERVICE_ID }}
+    with:
+      commit_sha: ${{ github.sha }}
