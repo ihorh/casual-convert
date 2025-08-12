@@ -15,4 +15,4 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d "{\"commitId\": \"${{ github.sha }}\"}" \
-            "https://api.render.com/v1/services/${{ secrets.RENDER_CC_UI_SERVICE_ID }}/deploys"
+            https://api.render.com/v1/services/${{ secrets.RENDER_CC_UI_SERVICE_ID }}/deploys
