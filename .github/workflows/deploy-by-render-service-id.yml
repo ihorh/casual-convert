@@ -18,8 +18,8 @@ jobs:
     steps:
       - name: Trigger Render API deploy
         run: |
-          curl --fail -X POST \
+          curl --fail -v -X POST \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d "{\"commitId\": \"${{ inputs.commit_sha }}\"}" \
-            https://api.render.com/v1/services/srv-d2ai89e3jp1c73amckh0/deploys
+            https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys
