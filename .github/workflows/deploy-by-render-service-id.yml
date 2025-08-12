@@ -3,9 +3,6 @@ name: Deploy to Render
 on:
   workflow_call:
     inputs:
-      service_id:
-        required: true
-        type: string
       commit_sha:
         required: true
         type: string
