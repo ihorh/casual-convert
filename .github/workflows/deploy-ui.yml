@@ -6,13 +6,10 @@ on:
       - 'prod-ui-*'
 
 jobs:
-  deploy-ui:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Render UI deploy
-        run: |
-          curl --fail -X POST \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"commitId\": \"${{ github.sha }}\"}" \
-            https://api.render.com/v1/services/${{ secrets.RENDER_CC_UI_SERVICE_ID }}/deploys
+  call-deploy:
+    uses: ./.github/workflows/deploy-by-render-service-id.yml
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_ID: ${{ secrets.RENDER_CC_UI_SERVICE_ID }}
+    with:
+      commit_sha: ${{ github.sha }}
