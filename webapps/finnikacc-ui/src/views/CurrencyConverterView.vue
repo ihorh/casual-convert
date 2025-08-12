@@ -26,6 +26,8 @@
         <div  class="grid grid-cols-2 gap-4 w-max">
             <div>Env Key</div>
             <div>Value</div>
+            <div>version</div>
+            <div>{{ appVersion }}</div>
             <template v-for="(value, key) in env">
                 <div >{{ key }}</div>
                 <div>{{ value }}</div>
@@ -50,5 +52,6 @@ const SST = import.meta.env.SSR
 const env = import.meta.env
 const keys = Object.keys(import.meta.env)
 
+const appVersion = __APP_VERSION__
 
 </script>
