@@ -15,5 +15,5 @@ It is especially useful if you are browsing (or applying to) different roles fro
 
 ## Development Docs
 
-* Deployment: [docs/DEPLOYMENT.md]([docs/DEPLOYMENT.md])
+* Deployment: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 * Development: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
