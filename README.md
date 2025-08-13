@@ -12,6 +12,7 @@ It is especially useful if you are browsing (or applying to) different roles fro
 
 * it is running on **free** instances at [render.com](render.com). I'm really curious how it will handle heavier load. Please, don't be mad, if it does not.
 * Currency conversion rates are cached and can be between few hours and few days old. Tool is good quick ballpark estimation comparison, not for exact conversion/exchange.
+* I'm not great at front-end development, please, don't judge my messy JS/TS code or poor UI design. :-)
 
 ## Development Docs
 
