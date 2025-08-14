@@ -3,6 +3,17 @@ import { useQuery } from '@tanstack/vue-query'
 import axios from 'axios'
 import Decimal from 'decimal.js'
 
+const api = axios.create({ baseURL: import.meta.env.VITE_API_SERVER_URL })
+
+export function useAPIServerStatus() {
+    return useQuery({
+        queryKey: ['useAPIServerStatus'],
+        queryFn: async () => (await api.get('/status')).data,
+        staleTime: 60,
+        gcTime: 100,
+    })
+}
+
 const MAIN_BASE_CONV_RATES: Data.CurrencyConvertRateModel[] = [
     { baseCurrency: 'USD', quoteCurrency: 'USD', convertRate: Decimal(1) },
     { baseCurrency: 'USD', quoteCurrency: 'EUR', convertRate: Decimal(0.86) },
@@ -13,7 +24,7 @@ const MAIN_BASE_CONV_RATES: Data.CurrencyConvertRateModel[] = [
 
 export function useCurrencyRatesQuery(currencies_sorted: string[]) {
     return useQuery({
-        queryKey: ['userProjects', currencies_sorted],
+        queryKey: ['useCurrencyRatesQuery', currencies_sorted],
         queryFn: async () => await fetchCurrencyRates(currencies_sorted),
 
         // Optional settings
@@ -30,10 +41,6 @@ export function useCurrencyRatesQuery(currencies_sorted: string[]) {
         initialDataUpdatedAt: 0, // let's say it is very old
     })
 }
-
-const api = axios.create({
-    baseURL: import.meta.env.VITE_API_SERVER_URL,
-})
 
 async function fetchCurrencyRates(
     currencies_sorted: string[],

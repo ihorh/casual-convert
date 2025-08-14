@@ -28,6 +28,8 @@
             <div>Value</div>
             <div>version</div>
             <div>{{ appVersion }}</div>
+            <div>API version</div>
+            <div>{{ apiServerStatus.version }}</div>
             <template v-for="(value, key) in env">
                 <div >{{ key }}</div>
                 <div>{{ value }}</div>
@@ -42,6 +44,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import CcBasket from '@/components/CcBasket.vue'
 import Disclaimer from '@/layouts/Disclaimer.vue'
 import Footer from '@/layouts/Footer.vue'
+import { useAPIServerStatus } from '@/stores/queries'
 
 const ENV_MODE = import.meta.env.MODE
 const BASE_URL = import.meta.env.BASE_URL
@@ -53,5 +56,11 @@ const env = import.meta.env
 const keys = Object.keys(import.meta.env)
 
 const appVersion = __APP_VERSION__
+
+const {
+        isError,
+        data: apiServerStatus,
+        error,
+    } = useAPIServerStatus()
 
 </script>

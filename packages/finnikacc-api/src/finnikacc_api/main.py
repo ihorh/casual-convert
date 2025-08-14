@@ -5,7 +5,6 @@ from contextlib import AsyncExitStack
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 
-from finnikacc_api import settings
 from finnikacc_api.app_webapi.main import app_webapi
 from finnikacc_api.lifecycle.arq_lifecycle import arq_lifespan
 from finnikacc_api.lifecycle.deps_ext_lifecycle import external_deps_lifespan
@@ -29,7 +28,7 @@ app = FastAPI(lifespan=lifespan)
 
 @app.get("/status")
 async def get_status() -> dict[str, str]:
-    return {"status": "Happy Finnika! :-)", "version": settings.APP_VERSION}
+    return {"status": "Happy Finnika! :-)"}
 
 
 app_api = FastAPI()
