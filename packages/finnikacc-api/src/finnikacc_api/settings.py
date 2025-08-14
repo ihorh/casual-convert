@@ -1,11 +1,14 @@
 import logging
+from importlib.metadata import version
 from typing import Annotated, Any, Final, Literal
 
 from arq.connections import RedisSettings
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
-LOG = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+_LOG = logging.getLogger(__name__)
 
 AppEnv = Literal["dev_container", "prod_render", "test_unit"]
 
@@ -14,9 +17,16 @@ class _AppEnvSettings(BaseSettings):
     APP_ENV: AppEnv
 
 
-_APP_ENV = _AppEnvSettings().APP_ENV  # pyright: ignore[reportCallIssue]
+_APP_ENV: Final[AppEnv] = _AppEnvSettings().APP_ENV  # pyright: ignore[reportCallIssue]
+_LOG.info("Environment: %s", _APP_ENV)
 
-LOG.info("Environment: %s", _APP_ENV)
+logging.config.fileConfig(  # pyright: ignore[reportAttributeAccessIssue]
+    f"config/{_APP_ENV}/logging.conf",
+    disable_existing_loggers=False,
+)
+
+_APP_VERSION: Final[str] = version(__package__ or __name__)
+_LOG.info("App Version: %s", _APP_VERSION)
 
 
 class _AppSettings(BaseSettings):
@@ -49,8 +59,9 @@ class _AppSecretSettings(BaseSettings):
 
 class _Settings:
     APP_ENV = _APP_ENV
+    APP_VERSION = _APP_VERSION
     app = _AppSettings()  # pyright: ignore[reportCallIssue]
-    secret = _AppSecretSettings() # pyright: ignore[reportCallIssue]
+    secret = _AppSecretSettings()  # pyright: ignore[reportCallIssue]
 
     def arq_redis_settings(self) -> RedisSettings:
         if self.app.REDIS_CONNECTION_STRING:

@@ -14,12 +14,6 @@ from finnikacc_api.lifecycle.deps_int_lifecycle import internal_deps_lifespan
 LOG = logging.getLogger(__name__)
 
 
-logging.config.fileConfig(  # pyright: ignore[reportAttributeAccessIssue]
-    f"config/{settings.APP_ENV}/logging.conf",
-    disable_existing_loggers=False,
-)
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     async with AsyncExitStack() as stack:
@@ -35,7 +29,7 @@ app = FastAPI(lifespan=lifespan)
 
 @app.get("/status")
 async def get_status() -> dict[str, str]:
-    return {"status": "Happy Finnika! :-)"}
+    return {"status": "Happy Finnika! :-)", "version": settings.APP_VERSION}
 
 
 app_api = FastAPI()
