@@ -17,6 +17,9 @@ services:
         - webapps/finnikacc-ui/README.md
         - webapps/finnikacc-ui/src/**/__tests__/*
         - webapps/finnikacc-ui/**/.*
+    envVars:
+      - key: VITE_API_SERVER_URL
+        value: https://api.cc.finnika.app
 
   - type: keyvalue
     name: finnikacc-kv
