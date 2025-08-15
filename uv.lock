@@ -250,7 +250,7 @@ wheels = [
 
 [[package]]
 name = "finnikacc"
-version = "0.0.1a4"
+version = "0.0.1a5"
 source = { editable = "." }
 dependencies = [
     { name = "finnikacc-api" },
@@ -268,7 +268,7 @@ dev = []
 
 [[package]]
 name = "finnikacc-api"
-version = "0.0.1a4"
+version = "0.0.1a5"
 source = { editable = "packages/finnikacc-api" }
 dependencies = [
     { name = "aiohttp", extra = ["speedups"] },
