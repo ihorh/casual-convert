@@ -57,6 +57,7 @@ class LastRequestETagRedisCache:
                 mapping=cast("dict[str, str]", mapping),
                 ex=self._ex,
             )
+            await pipe.execute()
 
 
 class CurrencyRateRedisCache:
