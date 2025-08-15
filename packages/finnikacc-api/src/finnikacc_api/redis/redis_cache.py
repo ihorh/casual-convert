@@ -1,9 +1,10 @@
+from collections.abc import AsyncGenerator
 from typing import cast
 
 from redis.asyncio import Redis
 
 from finnikacc_api import settings
-from finnikacc_api.redis._redis_utils import _redis_await, hsetex
+from finnikacc_api.redis._redis_utils import _hgetall_names, _redis_await, hsetex
 from finnikacc_api.redis.model import (
     CurrencyRateCacheType,
     CurrencyRateCacheValue,
@@ -16,9 +17,6 @@ from finnikacc_api.redis.model import (
     _convert_to_untyped_cr,
     _convert_to_untyped_etag,
 )
-
-last_request = "fcc:prod_render:provider:oex:request:latest"
-last_request_value = {"last_modified", "ETag"}
 
 
 class LastRequestETagRedisCache:
@@ -80,16 +78,20 @@ class CurrencyRateRedisCache:
     def _name(self, base_currency: str, quote_currency: str) -> str:
         return self._name_template.format(base_currency=base_currency, quote_currency=quote_currency)
 
-    async def scan_all_keys_typed(self, base_currency: str) -> list[CurrencyRateCacheValueTyped]:
-        result = await self.scan_all_keys(base_currency)
-        result_cast = (cast("CurrencyRateCacheValue", _convert_dict_bytes_to_str(r)) for r in result)
-        return [_convert_to_typed_cr(r) for r in result_cast]
+    async def scan_hgetall_currencies_all(self, base_currency: str) -> list[CurrencyRateCacheValueTyped]:
+        result = await _hgetall_names(self._redis, self._redis.scan_iter(self._name(base_currency, "*")))
+        return self._convert_bytes_dicts_to_cr_list(result)
 
-    async def scan_all_keys(self, base_currency: str) -> list[dict[bytes, bytes]]:
-        async with self._redis.pipeline() as pipe:
-            async for k in self._redis.scan_iter(self._name(base_currency, "*")):
-                pipe.hgetall(k)
-            return await pipe.execute()
+    async def hgetall_currencies(self, base_currency: str, currencies: list[str]) -> list[CurrencyRateCacheValueTyped]:
+        async def _async_iter() -> AsyncGenerator[str]:
+            for c in currencies:
+                yield self._name(base_currency, c)
+
+        result = await _hgetall_names(self._redis, _async_iter())
+        return self._convert_bytes_dicts_to_cr_list(result)
+
+    def _convert_bytes_dicts_to_cr_list(self, inp: list[dict[bytes, bytes]]) -> list[CurrencyRateCacheValueTyped]:
+        return [_convert_to_typed_cr(cast("CurrencyRateCacheValue", _convert_dict_bytes_to_str(r))) for r in inp]
 
     async def hset_conv(self, mapping: CurrencyRateCacheValueTyped, *, base_currency: str, quote_currency: str) -> None:
         await self.hset_raw(_convert_to_untyped_cr(mapping), base_currency=base_currency, quote_currency=quote_currency)

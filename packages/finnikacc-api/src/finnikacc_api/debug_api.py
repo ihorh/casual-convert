@@ -28,7 +28,7 @@ def verify_debug_token(token: str = Depends(api_key_header)) -> None:
 
 @app_debug_api.get("/debug-info", dependencies=[Depends(verify_debug_token)])
 async def get_debug_info(currencies_cache: CurrRateCacheDep) -> Response:
-    result = await currencies_cache.scan_all_keys("USD")
+    result = await currencies_cache.scan_hgetall_currencies_all("USD")
 
     LOG.info("Currencies: %s", result)
 

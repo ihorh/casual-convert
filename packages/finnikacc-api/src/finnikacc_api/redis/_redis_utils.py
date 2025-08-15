@@ -1,4 +1,4 @@
-from collections.abc import Awaitable
+from collections.abc import AsyncIterable, Awaitable
 
 from redis.asyncio import Redis
 from redis.typing import ExpiryT
@@ -22,3 +22,10 @@ async def hsetex(
     if ex:
         await redis.expire(name, ex)
     return result
+
+
+async def _hgetall_names(redis: Redis, names: AsyncIterable[str]) -> list[dict[bytes, bytes]]:
+    async with redis.pipeline() as pipe:
+        async for k in names:
+            pipe.hgetall(k)
+        return await pipe.execute()
