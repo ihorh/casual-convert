@@ -1,6 +1,6 @@
 {
     "name": "finnikacc",
-    "version": "0.0.1-a3",
+    "version": "0.0.1-a4",
     "private": true,
     "workspaces": [
         "webapps/*"
