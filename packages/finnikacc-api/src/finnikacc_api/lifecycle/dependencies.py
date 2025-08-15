@@ -33,10 +33,8 @@ def get_ext_deps(request: Request) -> ExternalDependencies:
     return get_ext_deps_from_app(request.app)
 
 
-def get_curr_rate_redis_cache(
-    int_deps: Annotated[InternalDependencies, Depends(get_int_deps)],
-) -> CurrencyRateRedisCache:
-    return int_deps.currency_rate_cache
+def get_curr_rate_redis_cache(ideps: Annotated[InternalDependencies, Depends(get_int_deps)]) -> CurrencyRateRedisCache:
+    return ideps.currency_rate_cache
 
 
 CurrRateCacheDep = Annotated[CurrencyRateRedisCache, Depends(get_curr_rate_redis_cache)]
@@ -63,6 +61,7 @@ def get_ext_deps_from_app(app: FastAPI) -> ExternalDependencies:
 
 def get_ext_deps_from_dict(ctx: dict) -> ExternalDependencies:
     return _get_attr_from_dict_context(ctx, EXTERNAL_DEPENDENCIES_CONTEXT_KEY, ExternalDependencies)
+
 
 def _get_attr_from_app_context[T](app: FastAPI, attr_name: str, expected_type: type[T]) -> T:
     attr_val = getattr(app.state, attr_name, None)

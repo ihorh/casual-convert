@@ -6,7 +6,9 @@ from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 
 from finnikacc_api.app_webapi.main import app_webapi
+from finnikacc_api.debug_api import app_debug_api
 from finnikacc_api.lifecycle.arq_lifecycle import arq_lifespan
+from finnikacc_api.lifecycle.dependencies import INTERNAL_DEPENDENCIES_CONTEXT_KEY
 from finnikacc_api.lifecycle.deps_ext_lifecycle import external_deps_lifespan
 from finnikacc_api.lifecycle.deps_int_lifecycle import internal_deps_lifespan
 
@@ -20,6 +22,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
         _ideps = await stack.enter_async_context(internal_deps_lifespan(app))
         _wrk = await stack.enter_async_context(arq_lifespan(app))
         LOG.info("App lifespan initialization completed.")
+
+        deps_int = getattr(app.state, INTERNAL_DEPENDENCIES_CONTEXT_KEY)
+        setattr(app_debug_api.state, INTERNAL_DEPENDENCIES_CONTEXT_KEY, deps_int)
+        setattr(app_webapi.state, INTERNAL_DEPENDENCIES_CONTEXT_KEY, deps_int)
+
         yield
 
 
@@ -35,3 +42,4 @@ app_api = FastAPI()
 
 app.mount("/api-web-app", app_webapi)
 app.mount("/api", app_api)
+app.mount("/api-debug", app_debug_api)
