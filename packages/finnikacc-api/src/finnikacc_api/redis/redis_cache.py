@@ -10,6 +10,8 @@ from finnikacc_api.redis.model import (
     CurrencyRateCacheValueTyped,
     RequestLastModETagCacheValue,
     RequestLastModETagCacheValueTyped,
+    _convert_dict_bytes_to_str,
+    _convert_to_typed_cr,
     _convert_to_typed_etag,
     _convert_to_untyped_cr,
     _convert_to_untyped_etag,
@@ -77,6 +79,17 @@ class CurrencyRateRedisCache:
 
     def _name(self, base_currency: str, quote_currency: str) -> str:
         return self._name_template.format(base_currency=base_currency, quote_currency=quote_currency)
+
+    async def scan_all_keys_typed(self, base_currency: str) -> list[CurrencyRateCacheValueTyped]:
+        result = await self.scan_all_keys(base_currency)
+        result_cast = (cast("CurrencyRateCacheValue", _convert_dict_bytes_to_str(r)) for r in result)
+        return [_convert_to_typed_cr(r) for r in result_cast]
+
+    async def scan_all_keys(self, base_currency: str) -> list[dict[bytes, bytes]]:
+        async with self._redis.pipeline() as pipe:
+            async for k in self._redis.scan_iter(self._name(base_currency, "*")):
+                pipe.hgetall(k)
+            return await pipe.execute()
 
     async def hset_conv(self, mapping: CurrencyRateCacheValueTyped, *, base_currency: str, quote_currency: str) -> None:
         await self.hset_raw(_convert_to_untyped_cr(mapping), base_currency=base_currency, quote_currency=quote_currency)

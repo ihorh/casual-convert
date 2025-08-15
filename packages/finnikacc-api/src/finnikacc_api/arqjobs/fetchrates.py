@@ -48,7 +48,9 @@ def _clean_etag(etag: str) -> str:
 
 
 async def _store_response_etag(
-    etag_cache: LastRequestETagRedisCache, endpoint: str, headers: CIMultiDictProxy[str],
+    etag_cache: LastRequestETagRedisCache,
+    endpoint: str,
+    headers: CIMultiDictProxy[str],
 ) -> None:
     if (etag := headers.get(hdrs.ETAG)) and (date_rfc_7231 := headers.get(hdrs.DATE)):
         await etag_cache.hset_conv(
@@ -74,6 +76,7 @@ async def _store_curr_rates(
 
     rates_transformed = {
         k: CurrencyRateCacheValueTyped(
+            currency=k,
             rate=v,
             request_at=timestamp_fl,
             last_modified=int(last_mod_dt.timestamp()),
