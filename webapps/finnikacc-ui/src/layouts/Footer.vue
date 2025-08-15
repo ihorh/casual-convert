@@ -1,5 +1,5 @@
 <template>
-    <div class="flex gap-x-2 text-sm">
+    <div class="flex gap-x-2 text-xs">
         <div>&copy; Ihor H. 2025</div>
         <div>|</div>
         <div>
@@ -8,7 +8,7 @@
                 target="_blank"
                 class="hover:underline hover:text-atomic-tangerine"
             >
-                Project GitHub Page
+                GitHub
             </a>
         </div>
         <div>|</div>
